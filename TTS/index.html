@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Text to Speech Demo</title>
+
+  <link rel="shortcut icon" type="image/x-icon" href="./img/favicon.ico"/>
+  <link href="./css/normalize.css" rel="stylesheet" type="text/css">
+  <link href="./css/skeleton.css" rel="stylesheet" type="text/css">
+  <link href="./css/app.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+  <main class="container">
+    <h1>Text to Speech Demo</h1>
+    <div class="row" id="msg"></div>
+    <div class="row">
+      <div class="one-half column">
+        <h4>Voices</h4>
+        <div>
+          <label for="voices">Choose Voice</label>
+          <select id="voices">
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="center margin">
+      <div class="row">
+        <div class="one-half column">
+          <textarea class="fullwidth" id="txt" cols="30" rows="10"></textarea>
+        </div>
+        <div class="one-half column">
+          <button id="button-speak" class="button-primary">Speak</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="./js/tts.js"></script>
+</body>
+</html>
