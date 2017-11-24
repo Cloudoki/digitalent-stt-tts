@@ -91,131 +91,23 @@ var langs ={
   "ภาษาไทย": "th-TH"
 };
 
-/**
-* Initialize the Speech Recognition functions
-* @param {boolean} auto - Automatically start to listen after loading
-*/
 function startSpeechRecognier(auto){
   // state used to to start and stop the detection
   var state = {
     "listening": false
   };
 
-  var recognizer = new SpeechRecognition();
+  // ## Initialize recognizer
+
 
   // ## recognizer settings
-  recognizer.continuous = true; // set recognizer to be continuous
-  recognizer.interimResults = true; // we want partial result
-  recognizer.lang = 'en-US'; // set language
-  recognizer.maxAlternatives = 5; // number of alternatives for the recognized text
+  
 
   // ## recognizer functionality
-  recognizer.onstart = function() {
-    // listening started
-    console.log("onstart");
-    document.querySelector('#icon').className = "green-text";
-  };
-
-  recognizer.onend = function() {
-    // listening ended
-    console.log("onend");
-    document.querySelector('#icon').className = "red-text";
-    if(state.listening) {
-      recognizer.start();
-    }
-  };
-
-  recognizer.onerror = function(error) {
-    // an error occurred
-    console.log("onerror:", error);
-  };
-
-  recognizer.onspeechstart = function() {
-    // detected sound that looks like speech
-    console.log('onspeechstart: Speech has been detected');
-  };
-
-  recognizer.onspeechend = function() {
-    // stopped detecting speech
-    console.log('onspeechend: Speech has stopped being detected');
-  };
-
-  recognizer.onresult = function(event) {
-    // got results
-    // the event holds the results
-    if (typeof(event.results) === 'undefined') {
-        //Something went wrong...
-        recognizer.stop();
-        return;
-    }
-
-    for (var i = event.resultIndex; i < event.results.length; ++i) {
-      if(event.results[i].isFinal) {
-        // get all the final detected text into an array
-        var finalText = [], list = [], bestResult = "";
-        for(var j = 0; j < event.results[i].length; ++j) {
-          // how confidente (between 0 and 1) is the service that the translation correct
-          var confidence = event.results[i][j].confidence.toFixed(4);
-          var transcript = event.results[i][j].transcript;
-          list.push({"confidence": confidence, "text":transcript});
-        }
-        // get the best result baased on the confidence value
-        finalText = list;
-        bestResult = sortByConfidence(list)[0]
-
-        // send the final results to the page
-        showResult(bestResult);
-        console.log("Final result:", finalText);
-        document.querySelector('#partials').innerHTML = "...";
-      } else {
-        // got partial result, show them
-        document.querySelector('#partials').innerHTML = event.results[i][0].transcript;
-        console.log("Partial:", event.results[i][0].transcript, event.results[i].length);
-      }
-    }
-  };
+  
 
   // ## Interactions
-  // start/stop button
-  var start = document.querySelector('#button-start');
-  var stop = document.querySelector('#button-stop');
-
-  // listen to button click event
-  start.onclick = function() {
-    try {
-      state.listening = true;
-      recognizer.start();
-      this.className = "";
-      stop.className = "button-primary";
-    } catch(ex) {
-      console.log('Recognition error: ' + ex.message);
-    }
-  };
-  stop.onclick = function () {
-    state.listening = false;
-    recognizer.stop();
-    start.className = "button-primary";
-    this.className = "";
-  };
-
-  // add change listener to update language
-  var select = document.querySelector("#langs");
-  addEventHandler(select, 'change', function() {
-    recognizer.lang = this.value;
-    console.log('Language changed to:', this.value);
-  });
-}
-
-/**
-* Add the results to the page.
-* @param {string} result - The results to show.
-*/
-function showResult(result) {
-  // show the result in the page
-  var finals = document.querySelector('#finals');
-  finals.innerHTML += '<li>' + result + '</li>';
-  // scroll to bottom after adding the text
-  finals.scrollTop = finals.scrollHeight;
+  
 }
 
 /**
@@ -233,21 +125,6 @@ function loadLanguages() {
       select.add(option);
     }
   }
-}
-
-/**
-* Returns an list ordered by confidence values, descending order.
-* @param {array} list - A list of objects containing the confidence and transcript values.
-* @return array - Ordered list
-*/
-function sortByConfidence(list) {
-  list.sort(function(a, b) {
-    return a.confidence - b.confidence;
-  }).reverse();
-  var sortedResult = list.map(function(obj) {
-    return obj.text;
-  });
-  return sortedResult;
 }
 
 // ----------------- INIT -------------------------
