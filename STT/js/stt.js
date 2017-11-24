@@ -1,6 +1,6 @@
 'use strict';
 
-// try to get SpeechRecognition
+// try and define to get SpeechRecognition
 try {
   var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition || null;
 }
@@ -103,14 +103,13 @@ function startSpeechRecognier(auto){
 
   var recognizer = new SpeechRecognition();
 
-  // set recognizer to be continuous
-  if (recognizer.continuous) {
-    recognizer.continuous = true;
-  }
+  // ## recognizer settings
+  recognizer.continuous = true; // set recognizer to be continuous
   recognizer.interimResults = true; // we want partial result
   recognizer.lang = 'en-US'; // set language
   recognizer.maxAlternatives = 5; // number of alternatives for the recognized text
 
+  // ## recognizer functionality
   recognizer.onstart = function() {
     // listening started
     console.log("onstart");
@@ -140,7 +139,6 @@ function startSpeechRecognier(auto){
     // stopped detecting speech
     console.log('onspeechend: Speech has stopped being detected');
   };
-
 
   recognizer.onresult = function(event) {
     // got results
@@ -177,11 +175,12 @@ function startSpeechRecognier(auto){
     }
   };
 
+  // ## Interactions
   // start/stop button
   var start = document.querySelector('#button-start');
   var stop = document.querySelector('#button-stop');
 
-  // liste to button click event
+  // listen to button click event
   start.onclick = function() {
     try {
       state.listening = true;
@@ -198,11 +197,6 @@ function startSpeechRecognier(auto){
     start.className = "button-primary";
     this.className = "";
   };
-
-  // auto start listening
-  if(auto) {
-    play.click();
-  }
 
   // add change listener to update language
   var select = document.querySelector("#langs");
