@@ -6,7 +6,7 @@ In order to explain how STT ans TTS work we'll be using the Web Speech API.
 ## Web Speech API
 The Web Speech API has two parts: SpeechRecognition (Speech-to-Text - STT) and SpeechSynthesis (Text-to-Speech - TTS).
 
-You can check/read how each work in the following documents: [SpeechRecognition](./STT/README.md), [SpeechSynthesis](./TTS/README.md).
+You can check/read how each work in the following documents: [SpeechRecognition](./STT/README.md).
 
 Also check [mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API) to learn more about it.
 
