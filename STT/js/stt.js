@@ -98,16 +98,73 @@ function startSpeechRecognier(auto){
   };
 
   // ## Initialize recognizer
-
+  var recognizer = new SpeechRecognition();
 
   // ## recognizer settings
-  
+  recognizer.continuous = true; // set recognizer to be continuous
+  recognizer.interimResults = true; // we want partial result
+  recognizer.lang = 'en-US'; // set language
+  recognizer.maxAlternatives = 5; // number of alternatives for the recognized text
 
   // ## recognizer functionality
-  
+  recognizer.onstart = function() {
+    // listening started
+    console.log("onstart");
+  };
+
+  recognizer.onend = function() {
+    // listening ended
+    console.log("onend");
+  };
+
+  recognizer.onerror = function(error) {
+    // an error occurred
+    console.log("onerror:", error);
+  };
+
+  recognizer.onspeechstart = function() {
+    // detected sound that looks like speech
+    console.log('onspeechstart: Speech has been detected');
+  };
+
+  recognizer.onspeechend = function() {
+    // stopped detecting speech
+    console.log('onspeechend: Speech has stopped being detected');
+  };
+
+  recognizer.onresult = function(event) {
+    console.log('results', event.results)
+  };
 
   // ## Interactions
-  
+  // start/stop button
+  var start = document.querySelector('#button-start');
+  var stop = document.querySelector('#button-stop');
+
+  // listen to button click event
+  start.onclick = function() {
+    try {
+      state.listening = true;
+      recognizer.start();
+      this.className = "";
+      stop.className = "button-primary";
+    } catch(ex) {
+      console.log('Recognition error: ' + ex.message);
+    }
+  };
+  stop.onclick = function () {
+    state.listening = false;
+    recognizer.stop();
+    start.className = "button-primary";
+    this.className = "";
+  };
+
+  // add change listener to update language
+  var select = document.querySelector("#langs");
+  addEventHandler(select, 'change', function() {
+    recognizer.lang = this.value;
+    console.log('Language changed to:', this.value);
+  });
 }
 
 /**
