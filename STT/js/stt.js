@@ -110,11 +110,16 @@ function startSpeechRecognier(auto){
   recognizer.onstart = function() {
     // listening started
     console.log("onstart");
+    document.querySelector('#icon').className = "green-text";
   };
 
   recognizer.onend = function() {
     // listening ended
     console.log("onend");
+    document.querySelector('#icon').className = "red-text";
+    if(state.listening) {
+      recognizer.start();
+    }
   };
 
   recognizer.onerror = function(error) {
@@ -133,7 +138,38 @@ function startSpeechRecognier(auto){
   };
 
   recognizer.onresult = function(event) {
-    console.log('results', event.results)
+    // got results
+    // the event holds the results
+    if (typeof(event.results) === 'undefined') {
+        //Something went wrong...
+        recognizer.stop();
+        return;
+    }
+
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if(event.results[i].isFinal) {
+        // get all the final detected text into an array
+        var finalText = [], list = [], bestResult = "";
+        for(var j = 0; j < event.results[i].length; ++j) {
+          // how confidente (between 0 and 1) is the service that the translation correct
+          var confidence = event.results[i][j].confidence.toFixed(4);
+          var transcript = event.results[i][j].transcript;
+          list.push({"confidence": confidence, "text":transcript});
+        }
+        // get the best result baased on the confidence value
+        finalText = list;
+        bestResult = sortByConfidence(list)[0]
+
+        // send the final results to the page
+        showResult(bestResult);
+        console.log("Final result:", finalText);
+        document.querySelector('#partials').innerHTML = "...";
+      } else {
+        // got partial result, show them
+        document.querySelector('#partials').innerHTML = event.results[i][0].transcript;
+        console.log("Partial:", event.results[i][0].transcript, event.results[i].length);
+      }
+    }
   };
 
   // ## Interactions
@@ -168,6 +204,18 @@ function startSpeechRecognier(auto){
 }
 
 /**
+* Add the results to the page.
+* @param {string} result - The results to show.
+*/
+function showResult(result) {
+  // show the result in the page
+  var finals = document.querySelector('#finals');
+  finals.innerHTML += '<li>' + result + '</li>';
+  // scroll to bottom after adding the text
+  finals.scrollTop = finals.scrollHeight;
+}
+
+/**
 * Load the languages into the select options.
 */
 function loadLanguages() {
@@ -182,6 +230,21 @@ function loadLanguages() {
       select.add(option);
     }
   }
+}
+
+/**
+* Returns an list ordered by confidence values, descending order.
+* @param {array} list - A list of objects containing the confidence and transcript values.
+* @return array - Ordered list
+*/
+function sortByConfidence(list) {
+  list.sort(function(a, b) {
+    return a.confidence - b.confidence;
+  }).reverse();
+  var sortedResult = list.map(function(obj) {
+    return obj.text;
+  });
+  return sortedResult;
 }
 
 // ----------------- INIT -------------------------
